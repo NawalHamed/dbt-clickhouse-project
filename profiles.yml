@@ -1,4 +1,4 @@
-default:
+dbt_clickhouse_project:
   target: dev
   outputs:
     dev:
