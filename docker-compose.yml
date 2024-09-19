@@ -6,12 +6,12 @@ services:
     environment:
       - DBT_PROFILES_DIR=/app/.dbt
     volumes:
-      - ./dbt:/app/dbt/dbt_clickhouse_project
+      - ./dbt:/app/dbt
       - ./profiles.yml:/app/.dbt/profiles.yml
     command: >
       bash -c "
         pip install --no-cache-dir dbt-core dbt-clickhouse &&
-        cd /app/dbt/dbt_clickhouse_project &&
+        cd /app/dbt &&
         dbt deps &&
         dbt seed &&
         dbt run &&
