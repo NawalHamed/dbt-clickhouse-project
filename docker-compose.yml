@@ -19,3 +19,9 @@ services:
       "
     ports:
       - "8002:8000"
+    networks:
+      - shared-network  # Add the service to the shared network
+
+networks:
+  shared-network:
+    external: true  # Specify that this network is managed externally (must exist in Docker)
