@@ -1,26 +1,26 @@
 version: '3.8'
 services:
   dbt-clickhouse:
-    build:
-      context: .
-      dockerfile: Dockerfile  # Custom Dockerfile if needed
+    image: python:3.9-slim
     container_name: dbt-clickhouse-service
     environment:
       - DBT_PROFILES_DIR=/app/.dbt
     volumes:
-      - ./dbt:/app/dbt  # This should map to the dbt directory inside the container
+      - ./dbt:/app/dbt
       - ./profiles.yml:/app/.dbt/profiles.yml
     command: >
       bash -c "
+        pip install --no-cache-dir dbt-core dbt-clickhouse &&
+        cd /app/dbt &&
         dbt deps &&
         dbt seed &&
         dbt run &&
         dbt test
       "
     ports:
-      - "8003:8000"
+      - "8002:8000"
     networks:
-      - shared-network  # Change to list format with '-'
+      - shared-network  # Add the service to the shared network
 
 networks:
   shared-network:
