@@ -5,9 +5,13 @@ services:
     container_name: dbt-clickhouse-service
     environment:
       - DBT_PROFILES_DIR=/app/.dbt
+      
     volumes:
-      - ./dbt:/app/dbt
-      - ./profiles.yml:/app/.dbt/profiles.yml
+      - /data/compose/64/v6/dbt:/app/dbt  # Absolute path to your dbt directory
+      - /data/compose/64/v6/profiles.yml:/app/.dbt/profiles.yml  # Absolute path to profiles.yml
+#    volumes:
+#      - ./dbt:/app/dbt
+#      - ./profiles.yml:/app/.dbt/profiles.yml
     command: >
       bash -c "
         pip install --no-cache-dir dbt-core dbt-clickhouse &&
