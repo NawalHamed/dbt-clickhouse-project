@@ -11,7 +11,7 @@ services:
     command: >
       bash -c "
         pip install --no-cache-dir dbt-core dbt-clickhouse &&
-        cd /app/dbt &&
+        cd /app/dbt/dbt_clickhouse_project &&
         dbt deps &&
         dbt seed &&
         dbt run &&
