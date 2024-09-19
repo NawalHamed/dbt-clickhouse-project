@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+  dbt-clickhouse:
+    image: python:3.9-slim
+    container_name: dbt-clickhouse-service
+    environment:
+      - DBT_PROFILES_DIR=/app/.dbt
+    volumes:
+      - ./dbt:/app/dbt
+      - ./profiles.yml:/app/.dbt/profiles.yml
+    command: >
+      bash -c "
+        pip install --no-cache-dir dbt-core dbt-clickhouse &&
+        cd /app/dbt &&
+        dbt deps &&
+        dbt seed &&
+        dbt run &&
+        dbt test
+      "
+    ports:
+      - "8002:8000"
