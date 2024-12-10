@@ -1,12 +1,26 @@
 version: '3.8'
 services:
+  clickhouse:
+    image: yandex/clickhouse-server:latest
+    container_name: clickhouse-server
+    restart: always
+    ports:
+      - "8123:8123"  # HTTP interface
+      - "9000:9000"  # Native interface
+    volumes:
+      - clickhouse-data:/var/lib/clickhouse
+    networks:
+      - shared-network  # Shared network for both services
+
   dbt-clickhouse:
     image: python:3.9-slim
     container_name: dbt-clickhouse-service
     environment:
       - DBT_PROFILES_DIR=/app/.dbt
     volumes:
+      # Mount the dbt directory (must include dbt_project.yml)
       - ./dbt:/app/dbt
+      # Mount the profiles.yml for DBT configuration
       - ./profiles.yml:/app/.dbt/profiles.yml
     command: >
       bash -c "
@@ -17,11 +31,16 @@ services:
         dbt run &&
         dbt test
       "
+    depends_on:
+      - clickhouse  # Ensure ClickHouse starts before DBT
     ports:
-      - "8002:8000"
+      - "8002:8000"  # Expose the service port for DBT
     networks:
-      - shared-network  # Add the service to the shared network
+      - shared-network  # Connect to the shared network
 
 networks:
   shared-network:
-    external: true  # Specify that this network is managed externally (must exist in Docker)
+    external: true  # Specify that this network already exists
+
+volumes:
+  clickhouse-data:
